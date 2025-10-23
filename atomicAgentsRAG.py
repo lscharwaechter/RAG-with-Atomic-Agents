@@ -10,7 +10,7 @@ from atomic_agents import AtomicAgent, AgentConfig, BaseIOSchema
 from atomic_agents.context import SystemPromptGenerator
 import os
 
-# ------------------------- PDF Loading & Chunking -------------------------
+### PDF Loading & Chunking ###
 
 def load_pdfs(pdf_paths: List[str]) -> Dict[str, List[str]]:
     """
@@ -62,7 +62,7 @@ def chunk_texts(pdf_texts: Dict[str, List[str]], chunk_size: int = 500) -> Dict[
     return chunked
 
 
-# ------------------------- Embedding Engine with FAISS -------------------------
+### Embedding Engine with FAISS ###
 
 class EmbeddingEngine:
     """
@@ -124,7 +124,7 @@ class EmbeddingEngine:
         ]
 
 
-# ------------------------- Pydantic Schemas -------------------------
+### Pydantic Schemas ###
 
 class RetrieveInput(BaseIOSchema):
     """Input schema for the Retrieval Agent."""
@@ -147,7 +147,7 @@ class SummarizeOutput(BaseIOSchema):
     sources: Set[str] = Field(..., description="Set of PDF filenames used as sources")
 
 
-# ------------------------- System Prompt -------------------------
+### System Prompt ###
 
 system_prompt_generator = SystemPromptGenerator(
     background=["Medical RAG assistant specialized in clinical guidelines."],
@@ -160,13 +160,13 @@ system_prompt_generator = SystemPromptGenerator(
     ]
 )
 
-# ------------------------- Mistral Client -------------------------
+### Mistral Client ###
 
 MISTRAL_API_KEY = "your-key-here" 
 mistral_raw = Mistral(api_key=MISTRAL_API_KEY)
 mistral_client = from_mistral(mistral_raw)
 
-# ------------------------- Agents -------------------------
+### Agents ###
 
 class RetrieveAgent(AtomicAgent[RetrieveInput, RetrieveOutput]):
     def __init__(self, *, config: AgentConfig, embedding_engine: EmbeddingEngine, **kwargs):
@@ -211,7 +211,7 @@ class SummarizeAgent(AtomicAgent[SummarizeInput, SummarizeOutput]):
         return response
 
 
-# ------------------------- Main -------------------------
+### Load documents, initialize agents and create the q&a loop in the main ###
 
 if __name__ == "__main__":
     pdf_files = [
